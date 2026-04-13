@@ -263,6 +263,21 @@ body {
     }
 }
 
+.how-to-play-hero-btn {
+    background: transparent;
+    border: 3px solid #FFFFFF;
+    color: #FFFFFF;
+    margin-top: 1.5rem;
+    animation-delay: 2.5s;
+}
+
+.how-to-play-hero-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #FFD23F;
+    color: #FFD23F;
+    box-shadow: 0 15px 40px rgba(255, 210, 63, 0.3);
+}
+
 .decorative-elements {
     position: absolute;
     top: 0;
@@ -362,6 +377,27 @@ body {
     padding: 1.5rem 2rem;
     background: rgba(0, 0, 0, 0.3);
     border-bottom: 3px solid #FFD23F;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.how-to-play-btn {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    border: 2px solid #FFD23F;
+    color: #FFD23F;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.how-to-play-btn:hover {
+    background: #FFD23F;
+    color: #2D1B69;
+    transform: translateY(-2px);
 }
 
 .back-button {
@@ -747,15 +783,18 @@ body {
 }
 
 .cell-num-badge {
-    font-size: 0.6rem;
-    color: rgba(45, 27, 105, 0.7);
-    font-weight: 800;
+    font-size: 0.75rem;
+    color: rgba(45, 27, 105, 0.9);
+    font-weight: 900;
     line-height: 1;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
     text-align: center;
     width: 100%;
     user-select: none;
     pointer-events: none;
+    background: rgba(255, 210, 63, 0.3);
+    border-radius: 2px;
+    padding: 1px 0;
 }
 
 @media (max-width: 768px) {
@@ -910,8 +949,12 @@ body {
         font-size: 1.1rem;
     }
 
+    .cell-num-badge {
+        font-size: 0.65rem;
+    }
+
     .phrase-slot-num {
-        font-size: 0.5rem;
+        font-size: 0.55rem;
     }
 
     .phrase-spacer {
@@ -1068,5 +1111,425 @@ body {
 
     .category-card {
         min-height: 44px;
+    }
+}
+
+/* ===================== HOW TO PLAY MODAL ===================== */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow-y: auto;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+    display: flex;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #1A0F3C 0%, #2D1B69 50%, #4A2C8A 100%);
+    border-radius: 20px;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: 3px solid #FFD23F;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255, 210, 63, 0.2);
+    border: 2px solid #FFD23F;
+    color: #FFD23F;
+    font-size: 2rem;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    background: #FFD23F;
+    color: #2D1B69;
+    transform: rotate(90deg);
+}
+
+.modal-header {
+    padding: 2.5rem 2.5rem 1.5rem;
+    border-bottom: 2px solid rgba(255, 210, 63, 0.3);
+    text-align: center;
+}
+
+.modal-title {
+    color: #FFD23F;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.modal-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.modal-body {
+    padding: 2rem 2.5rem;
+}
+
+.tutorial-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid rgba(255, 210, 63, 0.2);
+}
+
+.tutorial-section:last-child {
+    border-bottom: none;
+}
+
+.tutorial-section h3 {
+    color: #FFD23F;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-icon {
+    font-size: 1.8rem;
+}
+
+.tutorial-section p {
+    color: #FFFFFF;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-top: 0.5rem;
+}
+
+.tutorial-section strong {
+    color: #FFD23F;
+}
+
+/* Step List */
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.tutorial-step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.25rem;
+    border-radius: 12px;
+    border-left: 4px solid #FF6B35;
+    transition: all 0.3s ease;
+}
+
+.tutorial-step:hover {
+    background: rgba(255, 210, 63, 0.1);
+    transform: translateX(5px);
+}
+
+.step-number {
+    background: linear-gradient(135deg, #FFD23F, #FF6B35);
+    color: #2D1B69;
+    font-size: 1.3rem;
+    font-weight: 800;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+.step-content h4 {
+    color: #FFD23F;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.step-content p {
+    color: #FFFFFF;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.tip-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 0.75rem;
+}
+
+.tip-list li {
+    color: #FFFFFF;
+    padding: 0.5rem 0;
+    font-size: 0.95rem;
+}
+
+/* Controls Grid */
+.controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.control-item:hover {
+    background: rgba(255, 210, 63, 0.1);
+    transform: translateY(-3px);
+}
+
+.control-item kbd {
+    background: linear-gradient(135deg, #FFD23F, #FF6B35);
+    color: #2D1B69;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-block;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.control-item span {
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Game Controls List */
+.game-controls-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.game-control-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    border-left: 4px solid #FF6B35;
+    transition: all 0.3s ease;
+}
+
+.game-control-item:hover {
+    background: rgba(255, 210, 63, 0.1);
+    transform: translateX(5px);
+}
+
+.game-control-item strong {
+    color: #FFD23F;
+    font-size: 1.05rem;
+    display: block;
+    margin-bottom: 0.4rem;
+}
+
+.game-control-item span {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Tips Section */
+.tips-section .tips-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 1rem;
+}
+
+.tips-section .tips-list li {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1rem 1.25rem;
+    margin-bottom: 0.75rem;
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-left: 4px solid #FFD23F;
+    transition: all 0.3s ease;
+}
+
+.tips-section .tips-list li:hover {
+    background: rgba(255, 210, 63, 0.1);
+    transform: translateX(5px);
+}
+
+/* Modal Footer */
+.modal-footer {
+    padding: 1.5rem 2.5rem 2.5rem;
+    text-align: center;
+}
+
+.modal-close-btn {
+    padding: 1.2rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    min-width: 250px;
+}
+
+/* Modal Scrollbar Styling */
+.modal-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #FFD23F, #FF6B35);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #FFD23F;
+}
+
+/* Mobile Responsive for Modal */
+@media (max-width: 768px) {
+    .modal-overlay {
+        padding: 1rem;
+    }
+
+    .modal-content {
+        max-height: 95vh;
+    }
+
+    .modal-header {
+        padding: 2rem 1.5rem 1rem;
+    }
+
+    .modal-title {
+        font-size: 1.6rem;
+    }
+
+    .modal-subtitle {
+        font-size: 0.95rem;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .tutorial-section h3 {
+        font-size: 1.25rem;
+    }
+
+    .tutorial-step {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1rem;
+    }
+
+    .controls-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem 2rem;
+    }
+
+    .modal-close-btn {
+        min-width: auto;
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .how-to-play-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .tutorial-section h3 {
+        font-size: 1.1rem;
+    }
+
+    .step-content h4 {
+        font-size: 1rem;
+    }
+
+    .step-content p {
+        font-size: 0.9rem;
     }
 }

@@ -44,6 +44,7 @@
             </h1>
             <p class="hero-subtitle">Discover African Culture Through Words</p>
             <button class="cta-button" id="playButton">▶ Play Game</button>
+            <button class="cta-button how-to-play-hero-btn" id="howToPlayHeroBtn">❓ How to Play</button>
         </div>
         <div class="decorative-elements">
             <div class="deco deco-1">◆</div>
@@ -58,6 +59,134 @@
         <div class="game-header">
             <button class="back-button" id="backButton">← Back</button>
             <h2 class="game-title" id="gameHeaderTitle">African Crostic Puzzle</h2>
+            <button class="control-btn how-to-play-btn" id="howToPlayBtn">❓ How to Play</button>
+        </div>
+
+        <!-- How to Play Modal -->
+        <div class="modal-overlay" id="howToPlayModal">
+            <div class="modal-content">
+                <button class="modal-close" id="modalCloseBtn">&times;</button>
+                <div class="modal-header">
+                    <h2 class="modal-title">🎮 How to Play African Crostic</h2>
+                    <p class="modal-subtitle">A Fun Way to Learn About African Culture!</p>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="tutorial-section">
+                        <h3><span class="section-icon">🎯</span> Objective</h3>
+                        <p>Fill in the crossword grid with the correct letters based on the clues provided. When you complete the grid correctly, a <strong>mystery phrase</strong> will be revealed at the top of the screen!</p>
+                    </div>
+
+                    <div class="tutorial-section">
+                        <h3><span class="section-icon">📝</span> Step-by-Step Guide</h3>
+                        <div class="step-list">
+                            <div class="tutorial-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Choose a Category</h4>
+                                    <p>Select from topics like <strong>African Culture</strong>, <strong>History</strong>, <strong>Science</strong>, <strong>Music</strong>, or <strong>Entertainment</strong>.</p>
+                                </div>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Select a Puzzle</h4>
+                                    <p>Each category has multiple puzzles with different difficulty levels. Pick one that interests you!</p>
+                                </div>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Read the Clues</h4>
+                                    <p>On the right side, you'll see a list of clues. Each clue has a <strong>number</strong> that matches the grid cells and tells you how many letters are in the answer.</p>
+                                </div>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Fill in the Grid</h4>
+                                    <p>Click on any cell in the grid and type your answer. The game will automatically move to the next cell.</p>
+                                    <ul class="tip-list">
+                                        <li>✅ <strong>Green cell</strong> = Correct answer</li>
+                                        <li>❌ <strong>Red cell</strong> = Incorrect answer</li>
+                                        <li>🔢 Each cell has a number that matches the clue numbers</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="tutorial-step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Reveal the Mystery Phrase</h4>
+                                    <p>As you fill in correct answers, letters will appear in the puzzle phrase at the top. Complete the entire grid to reveal the full mystery phrase!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-section">
+                        <h3><span class="section-icon">⌨️</span> Keyboard Controls</h3>
+                        <div class="controls-grid">
+                            <div class="control-item">
+                                <kbd>A-Z</kbd>
+                                <span>Type letters to fill in cells</span>
+                            </div>
+                            <div class="control-item">
+                                <kbd>Backspace</kbd>
+                                <span>Delete current cell or go back</span>
+                            </div>
+                            <div class="control-item">
+                                <kbd>Arrow Keys</kbd>
+                                <span>Navigate between cells</span>
+                            </div>
+                            <div class="control-item">
+                                <kbd>Enter</kbd>
+                                <span>Move to next cell</span>
+                            </div>
+                            <div class="control-item">
+                                <kbd>Esc</kbd>
+                                <span>Go to previous cell</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-section">
+                        <h3><span class="section-icon">🎮</span> Game Controls</h3>
+                        <div class="game-controls-list">
+                            <div class="game-control-item">
+                                <strong>✅ Check Answer</strong>
+                                <span>Verifies all your answers and highlights correct/incorrect cells</span>
+                            </div>
+                            <div class="game-control-item">
+                                <strong>🔄 Reset Puzzle</strong>
+                                <span>Clears the entire grid and starts fresh</span>
+                            </div>
+                            <div class="game-control-item">
+                                <strong>➡️ Next Puzzle</strong>
+                                <span>Loads the next puzzle in the current category</span>
+                            </div>
+                            <div class="game-control-item">
+                                <strong>← Back</strong>
+                                <span>Return to previous screen</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutorial-section tips-section">
+                        <h3><span class="section-icon">💡</span> Pro Tips</h3>
+                        <ul class="tips-list">
+                            <li>💬 Click on any clue to jump directly to its first cell in the grid</li>
+                            <li>🎵 Listen for sound effects that give audio feedback for your actions</li>
+                            <li>🧩 Start with easier puzzles and work your way up</li>
+                            <li>🌍 Learn about African culture as you play - each clue teaches you something new!</li>
+                            <li>🏆 Try to complete puzzles without using the Check Answer button for extra challenge</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="control-btn primary modal-close-btn" id="modalCloseBtnBottom">🎮 Start Playing!</button>
+                </div>
+            </div>
         </div>
 
         <!-- Category selection screen -->

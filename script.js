@@ -1,3 +1,58 @@
+// ===================== SOUND MANAGER =====================
+
+const SoundManager = {
+    audio: null,
+    
+    init() {
+        this.audio = new Audio('Sound/energysound-stomp-drum-percussion-513744 (1).mp3');
+        this.audio.volume = 0.3; // Set default volume to 30%
+    },
+    
+    play(type = 'click') {
+        if (!this.audio) this.init();
+        
+        // Reset audio to allow rapid replays
+        this.audio.currentTime = 0;
+        
+        // Adjust playback based on type
+        switch(type) {
+            case 'click':
+                this.audio.volume = 0.2;
+                break;
+            case 'correct':
+                this.audio.volume = 0.4;
+                this.audio.playbackRate = 1.2;
+                break;
+            case 'complete':
+                this.audio.volume = 0.6;
+                this.audio.playbackRate = 1.0;
+                break;
+            case 'error':
+                this.audio.volume = 0.3;
+                this.audio.playbackRate = 0.8;
+                break;
+            default:
+                this.audio.volume = 0.3;
+        }
+        
+        this.audio.play().catch(err => console.log('Sound playback failed:', err));
+    }
+};
+
+// Initialize sound on first user interaction
+let soundInitialized = false;
+function initSoundOnFirstInteraction() {
+    if (!soundInitialized) {
+        SoundManager.init();
+        soundInitialized = true;
+        // Remove listeners after first interaction
+        document.removeEventListener('click', initSoundOnFirstInteraction);
+        document.removeEventListener('touchstart', initSoundOnFirstInteraction);
+    }
+}
+document.addEventListener('click', initSoundOnFirstInteraction);
+document.addEventListener('touchstart', initSoundOnFirstInteraction);
+
 // ===================== EMBEDDED CSV DATA =====================
 const CSV_DATA = `category,puzzle_title,puzzle_phrase,word,clue
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,SAFARI,Journey to observe wildlife in East Africa
@@ -294,12 +349,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     buildCategoryCards();
 
-    document.getElementById('playButton').addEventListener('click', showCategoryScreen);
-    document.getElementById('navPlayBtn').addEventListener('click', (e) => {
-        e.preventDefault();
+    document.getElementById('playButton').addEventListener('click', () => {
+        SoundManager.play('click');
         showCategoryScreen();
     });
-    document.getElementById('backButton').addEventListener('click', handleBack);
+    document.getElementById('navPlayBtn').addEventListener('click', (e) => {
+        e.preventDefault();
+        SoundManager.play('click');
+        showCategoryScreen();
+    });
+    document.getElementById('howToPlayBtn').addEventListener('click', openHowToPlayModal);
+    document.getElementById('howToPlayHeroBtn').addEventListener('click', openHowToPlayModal);
+    document.getElementById('modalCloseBtn').addEventListener('click', closeHowToPlayModal);
+    document.getElementById('modalCloseBtnBottom').addEventListener('click', closeHowToPlayModal);
+    document.getElementById('howToPlayModal').addEventListener('click', (e) => {
+        if (e.target.id === 'howToPlayModal') closeHowToPlayModal();
+    });
+    document.getElementById('backButton').addEventListener('click', () => {
+        SoundManager.play('click');
+        handleBack();
+    });
     document.getElementById('checkBtn').addEventListener('click', checkAnswers);
     document.getElementById('resetBtn').addEventListener('click', resetPuzzle);
     document.getElementById('nextBtn').addEventListener('click', nextPuzzle);
@@ -365,7 +434,10 @@ function rebuildCategoryCards() {
             <h3 class="card-title">${escapeHtml(cat)}</h3>
             <p class="card-count">${puzzles.length} Puzzle${puzzles.length !== 1 ? 's' : ''}</p>
         `;
-        card.addEventListener('click', () => showPuzzleSelect(cat));
+        card.addEventListener('click', () => {
+            SoundManager.play('click');
+            showPuzzleSelect(cat);
+        });
         categoryGrid.appendChild(card);
     });
 }
@@ -388,6 +460,7 @@ function showPuzzleSelect(category) {
         <h3 class="card-title">Back to Categories</h3>
     `;
     backCard.addEventListener('click', () => {
+        SoundManager.play('click');
         categoryTitleEl.textContent = 'Choose Your Category';
         rebuildCategoryCards();
     });
@@ -402,7 +475,10 @@ function showPuzzleSelect(category) {
             <h3 class="card-title">${escapeHtml(puzzle.title)}</h3>
             <p class="card-count">${puzzle.words.length} Words</p>
         `;
-        card.addEventListener('click', () => showGameScreen(category, puzzle.index));
+        card.addEventListener('click', () => {
+            SoundManager.play('click');
+            showGameScreen(category, puzzle.index);
+        });
         categoryGrid.appendChild(card);
     });
 }
@@ -505,7 +581,10 @@ function buildClues(puzzle) {
             <span class="clue-text">${escapeHtml(word.clue)}</span>
             <span class="clue-len">(${word.answer.length})</span>
         `;
-        li.addEventListener('click', () => highlightWord(word.clueNum));
+        li.addEventListener('click', () => {
+            SoundManager.play('click');
+            highlightWord(word.clueNum);
+        });
         cluesList.appendChild(li);
     });
 }
@@ -526,6 +605,9 @@ function handleCellInput(e) {
     cell.value = cell.value.toUpperCase().replace(/[^A-Z]/g, '');
 
     if (cell.value.length === 1) {
+        // Play click sound
+        SoundManager.play('click');
+        
         // Check if correct and update puzzle phrase
         checkAndUpdatePhrase(cell);
 
@@ -571,6 +653,7 @@ function handleCellKeydown(e) {
     if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
         e.preventDefault();
         cell.value = e.key.toUpperCase();
+        SoundManager.play('click');
         checkAndUpdatePhrase(cell);
 
         const nextWrapper = wrapper?.nextElementSibling;
@@ -644,11 +727,15 @@ function checkAndUpdatePhrase(cell) {
                 letterEl.classList.add('revealed');
                 cell.classList.add('correct');
                 cell.classList.remove('incorrect');
+                // Play correct sound
+                SoundManager.play('correct');
             } else if (userAnswer !== '') {
                 letterEl.textContent = '';
                 letterEl.classList.remove('revealed');
                 cell.classList.remove('correct');
                 cell.classList.add('incorrect');
+                // Play error sound
+                SoundManager.play('error');
             } else {
                 letterEl.textContent = '';
                 letterEl.classList.remove('revealed');
@@ -672,6 +759,8 @@ function checkPhraseComplete() {
     });
 
     if (allRevealed && slots.length > 0) {
+        // Play completion sound
+        SoundManager.play('complete');
         setTimeout(() => {
             alert('\u{1F389} Puzzle Complete! The phrase is revealed!');
         }, 300);
@@ -705,6 +794,7 @@ function checkAnswers() {
     });
 
     if (allCorrect && hasAnyInput) {
+        SoundManager.play('complete');
         alert('\u{1F389} All answers correct!');
     } else if (!hasAnyInput) {
         alert('Please fill in some answers first!');
@@ -712,6 +802,8 @@ function checkAnswers() {
 }
 
 function resetPuzzle() {
+    SoundManager.play('click');
+    
     const inputs = crosswordGrid.querySelectorAll('input.grid-cell');
     inputs.forEach(cell => {
         cell.value = '';
@@ -728,6 +820,8 @@ function resetPuzzle() {
 }
 
 function nextPuzzle() {
+    SoundManager.play('click');
+    
     if (!currentCategory) return;
     const puzzles = gameData.categories[currentCategory];
     currentPuzzleIdx = (currentPuzzleIdx + 1) % puzzles.length;
@@ -762,3 +856,29 @@ if (hero) {
         setTimeout(() => { sparkle.remove(); }, 800);
     });
 }
+
+// ===================== HOW TO PLAY MODAL =====================
+
+function openHowToPlayModal() {
+    SoundManager.play('click');
+    const modal = document.getElementById('howToPlayModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closeHowToPlayModal() {
+    SoundManager.play('click');
+    const modal = document.getElementById('howToPlayModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const modal = document.getElementById('howToPlayModal');
+        if (modal && modal.classList.contains('active')) {
+            closeHowToPlayModal();
+        }
+    }
+});
