@@ -1,3 +1,293 @@
+// ===================== TVMAZE API INTEGRATION =====================
+
+// Map of show/movie names to their TVMaze search queries
+const TVMAZE_SHOWS = {
+    // Music-related shows/contents
+    'Bob Marley': 'Bob Marley',
+    'Legend': 'Bob Marley',
+    'Louis': 'Hugh Masekela',
+    'Louis Armstrong': 'Louis Armstrong',
+    'Miriam': 'Miriam Makeba',
+    'Miriam Makeba': 'Miriam Makeba',
+    'Angelique': 'Angelique Kidjo',
+    'Angelique Kidjo': 'Angelique Kidjo',
+    'Salif': 'Salif Keita',
+    'Salif Keita': 'Salif Keita',
+    'Yousou': 'Youssou NDour',
+    'Yousseu': 'Youssou NDour',
+    'Reggae': 'Reggae',
+    'Jazz': 'Jazz',
+    'Blues': 'Blues',
+    'Soul': 'Soul Music',
+    'Funk': 'Funk Music',
+    'HipHop': 'Hip Hop',
+    'Gospel': 'Gospel Music',
+    'Afrobeat': 'Afrobeat',
+    'Drums': 'Drumming',
+    'Guitar': 'Guitar',
+    'Kora': 'Kora Music',
+    'Marimba': 'Marimba',
+    'Piano': 'Piano',
+    'Flute': 'Flute',
+    'Harp': 'Harp',
+    'Violin': 'Violin',
+    'Banjo': 'Banjo',
+
+    // Entertainment/Film contents
+    'Nollywood': 'Nollywood',
+    'Lagos': 'Lagos',
+    'African Cinema': 'African Film',
+    'Film': 'Movie',
+    'Actor': 'Actor',
+    'Drama': 'Drama',
+    'Soccer': 'Football',
+    'Football': 'Football',
+    'Rugby': 'Rugby',
+    'Sports': 'Sports',
+    'Festival': 'Festival',
+    'Durbar': 'Durbar',
+    'Dance': 'Dance',
+    'Music': 'Music',
+    'Poetry': 'Poetry',
+    'Literature': 'Literature',
+    'Art': 'Art',
+    'Culture': 'Culture',
+    'Safari': 'Safari',
+    'Sahara': 'Sahara',
+    'Egypt': 'Egypt',
+    'Pharaoh': 'Pharaoh',
+    'Pyramid': 'Pyramid',
+    'Mandela': 'Mandela',
+    'Peace': 'Peace',
+    'Freedom': 'Freedom',
+    'Justice': 'Justice',
+    'Nature': 'Nature',
+    'Science': 'Science',
+    'Space': 'Space',
+    'Stars': 'Stars',
+    
+    // History/Culture
+    'Mandela': 'Nelson Mandela',
+    'Lumumba': 'Patrice Lumumba',
+    'Nkrumah': 'Kwame Nkrumah',
+    'Selassie': 'Haile Selassie',
+    'Kenyatta': 'Jomo Kenyatta',
+    'Cleopatra': 'Cleopatra',
+    'Pharaoh': 'Ancient Egypt',
+    'Pyramid': 'Pyramids',
+    'Sphinx': 'Sphinx',
+    'Memphis': 'Memphis Egypt',
+    'Mali': 'Mali Empire',
+    'Ashanti': 'Ashanti Empire',
+    'Zimbabwe': 'Great Zimbabwe',
+    'Songhai': 'Songhai Empire',
+    'Benin': 'Benin Kingdom',
+    'Aksum': 'Aksumite Empire',
+    'Apartheid': 'Apartheid',
+    'Berlin': 'Berlin Conference Africa',
+    'Tuskegee': 'Tuskegee',
+    'March': 'Civil Rights March',
+    'Boycott': 'Boycott Civil Rights',
+    'Wangari': 'Wangari Maathai',
+    
+    // Geography/Nature
+    'Sahara': 'Sahara Desert',
+    'Congo': 'Congo Rainforest',
+    'Victoria': 'Lake Victoria',
+    'Kilimanjaro': 'Mount Kilimanjaro',
+    'Medina': 'Medina',
+    'Nile': 'Nile River',
+    'Safari': 'African Safari',
+    
+    // African Culture
+    'Ubuntu': 'Ubuntu Philosophy',
+    'Kente': 'Kente Cloth',
+    'Djembe': 'Djembe Drum',
+    'Zulu': 'Zulu Nation',
+    'Griot': 'Griot',
+    'Adinkra': 'Adinkra Symbols',
+    'Jollof': 'Jollof Rice',
+    'Fufu': 'Fufu',
+    'Fufou': 'Fufu',
+    'Couscous': 'Couscous',
+    'Tagine': 'Tagine',
+    'Injera': 'Injera',
+    'Yam': 'Yam Africa',
+    'Kola': 'Kola Nut',
+    'Totem': 'Totem Africa',
+    'Mask': 'African Mask',
+    'Elder': 'African Elder',
+    'Highlife': 'Highlife Music',
+    'Juju': 'Juju Music',
+    'Mbaqanga': 'Mbaqanga',
+    'Talking': 'Talking Drum',
+    'Panaf': 'Panaf Festival',
+    'Timkit': 'Timkat',
+    'Durbar': 'Durbar Festival',
+    'Parade': 'Parade Festival',
+    'Feast': 'African Feast',
+    'Color': 'Festival Colors',
+    
+    // Science
+    'Astro': 'Astronomy',
+    'Galaxy': 'Galaxy',
+    'Orbit': 'Space Orbit',
+    'Comet': 'Comet',
+    'Meteor': 'Meteor',
+    'Lunar': 'Moon Lunar',
+    'Rocket': 'Rocket Space',
+    'Solar': 'Solar System',
+    'Brain': 'Human Brain',
+    'Blood': 'Human Blood',
+    'Heart': 'Human Heart',
+    'Lungs': 'Human Lungs',
+    'Skeleton': 'Human Skeleton',
+    'Muscle': 'Muscle',
+    'Ecosys': 'Ecosystem',
+    'Climate': 'Climate',
+    'Drought': 'Drought',
+    'Plains': 'African Plains',
+    'Stream': 'Stream',
+    'Tropic': 'Tropics',
+    'Atom': 'Atom',
+    'Genome': 'Genome',
+    'Cells': 'Cells',
+    'Energy': 'Energy',
+    'Ion': 'Ion',
+    'Bond': 'Chemical Bond',
+    'Acid': 'Acid',
+    'Botany': 'Botany',
+    'Geolog': 'Geology',
+    'Ecolog': 'Ecology',
+    
+    // Literature/Arts
+    'Novel': 'Novel',
+    'Poetry': 'Poetry',
+    'Canvas': 'Canvas Art',
+    'Mural': 'Mural',
+    'Fable': 'Fable',
+    'Myth': 'Mythology',
+    
+    // Sports
+    'Soccer': 'Soccer Africa',
+    'Rugby': 'Rugby Africa',
+    'Medal': 'Olympic Medal',
+    'Relay': 'Relay Race',
+    'Trophy': 'Trophy',
+    'Arena': 'Sports Arena',
+    
+    // Film/Entertainment
+    'Scene': 'Movie Scene',
+    'Plot': 'Movie Plot',
+    'Award': 'Film Award',
+    'Film': 'African Cinema',
+    'Drama': 'African Drama'
+};
+
+// Cache for fetched images
+const imageCache = {};
+
+async function fetchTVMazeImage(searchQuery) {
+    // Return cached image if available
+    if (imageCache[searchQuery]) {
+        return imageCache[searchQuery];
+    }
+
+    try {
+        const response = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(searchQuery)}`);
+        const data = await response.json();
+
+        if (data && data.length > 0) {
+            // Try to find a show with an image
+            for (const item of data) {
+                const show = item.show;
+                const imageUrl = show.image?.medium || show.image?.original || null;
+                if (imageUrl) {
+                    imageCache[searchQuery] = imageUrl;
+                    return imageUrl;
+                }
+            }
+            // If no image found in first few results, return null
+            imageCache[searchQuery] = null;
+            return null;
+        }
+    } catch (error) {
+        console.log('TVMaze API error:', error);
+    }
+
+    imageCache[searchQuery] = null;
+    return null;
+}
+
+// Preload images for current category
+async function preloadCategoryImages(category) {
+    const puzzles = gameData.categories[category];
+    if (!puzzles) return;
+
+    // Collect all unique search queries
+    const searchQueries = new Set();
+    
+    for (const puzzle of puzzles) {
+        for (const word of puzzle.words) {
+            // Check if we have a mapping
+            for (const [key, searchQuery] of Object.entries(TVMAZE_SHOWS)) {
+                if (word.answer.toUpperCase().includes(key.toUpperCase()) ||
+                    word.clue.toUpperCase().includes(key.toUpperCase())) {
+                    searchQueries.add(searchQuery);
+                    break;
+                }
+            }
+        }
+    }
+
+    // Fetch all images in parallel
+    const promises = Array.from(searchQueries).map(query => fetchTVMazeImage(query));
+    await Promise.all(promises);
+}
+
+// Extract keywords from clue for better search
+function extractKeywords(clue, answer) {
+    // Remove common words and get meaningful keywords
+    const stopWords = new Set(['a', 'an', 'the', 'is', 'are', 'was', 'were', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'and', 'or', 'that', 'this', 'it', 'be', 'as', 'into', 'like', 'through', 'after', 'over', 'between', 'out', 'against', 'during', 'without', 'before', 'under', 'around', 'among']);
+    
+    const words = clue.split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w.toLowerCase()));
+    const keywords = [answer, ...words.slice(0, 3)]; // Use answer + first 3 meaningful words
+    
+    return keywords;
+}
+
+// Get image for a word/answer
+async function getWordImage(word, clue) {
+    // Strategy 1: Check TVMAZE_SHOWS mapping
+    for (const [key, searchQuery] of Object.entries(TVMAZE_SHOWS)) {
+        if (word.toUpperCase().includes(key.toUpperCase()) ||
+            clue.toUpperCase().includes(key.toUpperCase())) {
+            const image = await fetchTVMazeImage(searchQuery);
+            if (image) return image;
+        }
+    }
+    
+    // Strategy 2: Dynamic search using clue keywords
+    const keywords = extractKeywords(clue, word);
+    
+    // Try different keyword combinations
+    const searchQueries = [
+        keywords.join(' '),                    // All keywords
+        keywords[0] + ' Africa',              // Answer + Africa
+        keywords[0] + ' African',             // Answer + African
+        keywords.slice(0, 2).join(' '),       // First two keywords
+        keywords[0]                            // Just the answer
+    ];
+    
+    for (const query of searchQueries) {
+        if (query.length < 3) continue;
+        const image = await fetchTVMazeImage(query);
+        if (image) return image;
+    }
+    
+    return null;
+}
+
 // ===================== SOUND MANAGER =====================
 
 const SoundManager = {
@@ -58,11 +348,11 @@ const CSV_DATA = `category,puzzle_title,puzzle_phrase,word,clue
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,SAFARI,Journey to observe wildlife in East Africa
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,DJEMBE,Traditional West African drum
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,KENTE,Colorful woven cloth from Ghana
-African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,UBUNTU,African philosophy meaning I am because we are
+African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,UBUNTU,"African philosophy meaning I am because we are"
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,SAHARA,Worlds largest hot desert in Africa
 African Culture,African Culture Basics,AFRICA IS RICH IN CULTURE,ZULU,Largest ethnic group in South Africa
 African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,MANDELA,Anti-apartheid leader who became president of South Africa
-African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,LUMUMBA,First prime minister of the Democratic Republic of Congo
+African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,LUMUMBA,"First prime minister of the Democratic Republic of Congo"
 African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,NKRUMAH,First president of Ghana who led independence
 African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,SELASSIE,Former emperor of Ethiopia
 African Culture,African Leaders,PEACE FREEDOM JUSTICE NOW,KENYATTA,First president of Kenya
@@ -88,9 +378,9 @@ African Culture,African Art,BRONZE MASKS ARE BEAUTIFUL,WEAVE,Technique used to m
 African Culture,African Art,BRONZE MASKS ARE BEAUTIFUL,POTTERY,Art of making clay containers
 History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,PHARAOH,Ruler of ancient Egypt
 History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,PYRAMID,Massive tomb built for Egyptian kings
-History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,CLEOPATRA,Last active ruler of the Ptolemaic Kingdom of Egypt
-History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,SPHINX,Mythical creature with a lions body and human head
-History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,PAPYRU,Ancient Egyptian writing material
+History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,CLEOPATRA,"Last active ruler of the Ptolemaic Kingdom of Egypt"
+History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,SPHINX,"Mythical creature with a lions body and human head"
+History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,PAPYRUS,Ancient Egyptian writing material
 History,Ancient Egypt,PHARAOHS RULED ANCIENT EGYPT,MEMPHIS,Ancient capital of Egypt
 History,African Empires,GREAT EMPIRES OF AFRICA,ASHANTI,Powerful West African kingdom in modern Ghana
 History,African Empires,GREAT EMPIRES OF AFRICA,MALI,Medieval West African empire ruled by Mansa Musa
@@ -201,19 +491,47 @@ Entertainment,Festivals,DANCE SING AND CELEBRATE,COLOR,Bright visual element of 
 function parseCSV(csvText) {
     const lines = csvText.trim().split('\n');
     const headers = lines[0].split(',');
+    const expectedColumns = headers.length; // Should be 5
     const rows = [];
+    
     for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue; // Skip empty lines
+        
         const values = [];
         let current = '';
         let inQuotes = false;
-        for (const ch of lines[i]) {
-            if (ch === '"') { inQuotes = !inQuotes; }
-            else if (ch === ',' && !inQuotes) { values.push(current.trim()); current = ''; }
-            else { current += ch; }
+        
+        for (let j = 0; j < line.length; j++) {
+            const ch = line[j];
+            if (ch === '"') { 
+                inQuotes = !inQuotes; 
+            }
+            else if (ch === ',' && !inQuotes) { 
+                values.push(current.trim()); 
+                current = ''; 
+            }
+            else { 
+                current += ch; 
+            }
         }
         values.push(current.trim());
+        
+        // If we have more values than expected, merge the extras into the last field
+        if (values.length > expectedColumns) {
+            const extraValues = values.splice(expectedColumns - 1);
+            values.push(extraValues.join(','));
+        }
+        
         const row = {};
-        headers.forEach((h, idx) => { row[h.trim()] = values[idx] || ''; });
+        headers.forEach((h, idx) => { 
+            let val = values[idx] || '';
+            // Remove surrounding quotes if present
+            if (val.startsWith('"') && val.endsWith('"')) {
+                val = val.slice(1, -1);
+            }
+            row[h.trim()] = val; 
+        });
         rows.push(row);
     }
     return rows;
@@ -267,17 +585,18 @@ function buildCrosticPuzzle(phrase, words) {
     const wordStartNums = []; // clue number for each word
 
     words.forEach((word, rowIdx) => {
-        wordStartNums.push(cellNum);
+        const startNum = cellNum;
+        wordStartNums.push(startNum);
         const letters = word.answer.split('');
         letters.forEach((letter, colIdx) => {
-            grid.push({ row: rowIdx, col: colIdx, letter, num: cellNum++ });
+            grid.push({ row: rowIdx, col: colIdx, letter, num: cellNum++, clueNum: startNum });
         });
     });
 
     // Map phrase letters to grid cells sequentially
     // Each letter in the phrase (ignoring spaces) gets assigned the next available cell number
+    const phraseWords = phrase.split(' ');
     const phraseLetters = phrase.replace(/[^A-Z]/g, '').split('');
-    const phraseCells = []; // { num, letter } for each phrase position
 
     // We assign phrase positions by taking cells in order (row by row, col by col)
     let cellIdx = 0;
@@ -290,13 +609,43 @@ function buildCrosticPuzzle(phrase, words) {
         phraseMap.push({ phrasePos: i, num: cell.num, letter: cell.letter });
     }
 
-    // Build words with their clue numbers
+    // Shuffle WORDS in the phrase (not individual letters)
+    // This keeps words readable but rearranges them into a different order
+    const shuffledWords = [...phraseWords];
+    for (let i = shuffledWords.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+    }
+
+    // Build shuffled phrase map that preserves word boundaries
+    const shuffledPhraseMap = [];
+    let phraseMapIdx = 0;
+    
+    for (let w = 0; w < shuffledWords.length; w++) {
+        const word = shuffledWords[w];
+        for (let i = 0; i < word.length; i++) {
+            if (phraseMapIdx < phraseMap.length) {
+                shuffledPhraseMap.push({
+                    ...phraseMap[phraseMapIdx],
+                    phrasePos: phraseMapIdx
+                });
+                phraseMapIdx++;
+            }
+        }
+        // Add space marker between words (except after last word)
+        if (w < shuffledWords.length - 1) {
+            shuffledPhraseMap.push({ phrasePos: 'space', num: null, letter: ' ' });
+        }
+    }
+
+    // Build words with their clue numbers and cell numbers
     const wordsWithNums = words.map((w, i) => ({
         ...w,
-        clueNum: wordStartNums[i]
+        clueNum: wordStartNums[i],
+        cellNums: grid.filter(c => c.row === i).map(c => c.num)
     }));
 
-    return { grid, words: wordsWithNums, phrase, phraseMap };
+    return { grid, words: wordsWithNums, phrase, phraseMap: shuffledPhraseMap, shuffledWords };
 }
 
 // ===================== GAME STATE =====================
@@ -327,7 +676,7 @@ const categoryColors = {
 // ===================== DOM REFS =====================
 
 let gameContainer, categoryScreen, gameScreen, categoryGrid, categoryTitleEl;
-let gameHeaderTitle, crosswordGrid, cluesList, puzzlePhraseEl, gridContainerEl;
+let gameHeaderTitle, answersList, cluesList, puzzlePhraseEl, answersContainerEl;
 
 // ===================== INIT =====================
 
@@ -338,10 +687,30 @@ document.addEventListener('DOMContentLoaded', () => {
     categoryGrid = document.getElementById('categoryGrid');
     categoryTitleEl = document.getElementById('categoryTitle');
     gameHeaderTitle = document.getElementById('gameHeaderTitle');
-    crosswordGrid = document.getElementById('crosswordGrid');
+    answersList = document.getElementById('answersList');
     cluesList = document.getElementById('cluesList');
     puzzlePhraseEl = document.getElementById('puzzlePhrase');
-    gridContainerEl = document.getElementById('gridContainer');
+    answersContainerEl = document.getElementById('answersContainer');
+
+    // Verify all DOM elements exist
+    const missingElements = [];
+    if (!gameContainer) missingElements.push('gameContainer');
+    if (!categoryScreen) missingElements.push('categoryScreen');
+    if (!gameScreen) missingElements.push('gameScreen');
+    if (!categoryGrid) missingElements.push('categoryGrid');
+    if (!answersList) missingElements.push('answersList');
+    if (!cluesList) missingElements.push('cluesList');
+    if (!puzzlePhraseEl) missingElements.push('puzzlePhraseEl');
+    if (!answersContainerEl) missingElements.push('answersContainerEl');
+
+    if (missingElements.length > 0) {
+        console.error('Missing DOM elements:', missingElements);
+        alert('Error: Missing required DOM elements: ' + missingElements.join(', '));
+    } else {
+        console.log('✓ All DOM elements found');
+        console.log('✓ Game data loaded:', gameData.order.length, 'categories');
+        console.log('✓ Categories:', gameData.order.join(', '));
+    }
 
     document.querySelectorAll('.hero-title .letter').forEach((letter, i) => {
         letter.style.animationDelay = `${i * 0.1}s, ${1 + i * 0.2}s`;
@@ -391,15 +760,36 @@ function showCategoryScreen() {
     gameHeaderTitle.textContent = 'Choose a Category';
 }
 
-function showGameScreen(category, puzzleIdx) {
+async function showGameScreen(category, puzzleIdx) {
     currentScreen = 'game';
     currentCategory = category;
     currentPuzzleIdx = puzzleIdx;
 
+    console.log('=== SHOW GAME SCREEN ===');
+    console.log('Category:', category);
+    console.log('Puzzle Index:', puzzleIdx);
+    console.log('gameScreen element:', gameScreen);
+    console.log('gameScreen before:', gameScreen.style.display);
+    
     categoryScreen.style.display = 'none';
     gameScreen.style.display = 'block';
+    
+    console.log('gameScreen after:', gameScreen.style.display);
+    console.log('categoryScreen:', categoryScreen.style.display);
 
-    loadPuzzle(category, puzzleIdx);
+    // Show loading indicator
+    answersList.innerHTML = '<div class="clues-loading">Loading puzzle...</div>';
+    cluesList.innerHTML = '<div class="clues-loading">Loading clues...</div>';
+
+    try {
+        await loadPuzzle(category, puzzleIdx);
+        console.log('=== GAME SCREEN LOADED SUCCESSFULLY ===');
+    } catch (error) {
+        console.error('Error loading puzzle:', error);
+        answersList.innerHTML = '<div class="clues-loading" style="color: #F44336;">Error loading puzzle. Please try again.</div>';
+        cluesList.innerHTML = '';
+        alert('Error loading puzzle. Please check the console for details.');
+    }
 }
 
 function handleBack() {
@@ -446,11 +836,17 @@ function buildCategoryCards() {
     rebuildCategoryCards();
 }
 
-function showPuzzleSelect(category) {
+async function showPuzzleSelect(category) {
     const puzzles = gameData.categories[category];
     const colors = categoryColors[category] || { bg: '#666', accent: '#888' };
 
     categoryTitleEl.textContent = category;
+    categoryGrid.innerHTML = '<div class="clues-loading">Loading puzzles...</div>';
+
+    // Preload images for this category (but don't block UI)
+    preloadCategoryImages(category).catch(err => console.log('Image preload error:', err));
+
+    // Clear loading and show back card
     categoryGrid.innerHTML = '';
 
     const backCard = document.createElement('div');
@@ -466,6 +862,7 @@ function showPuzzleSelect(category) {
     });
     categoryGrid.appendChild(backCard);
 
+    // Create puzzle cards synchronously (images will load in background)
     puzzles.forEach((puzzle) => {
         const card = document.createElement('div');
         card.className = 'category-card puzzle-card';
@@ -480,35 +877,79 @@ function showPuzzleSelect(category) {
             showGameScreen(category, puzzle.index);
         });
         categoryGrid.appendChild(card);
+
+        // Load image in background and update card
+        (async () => {
+            for (const word of puzzle.words) {
+                const img = await getWordImage(word.answer, word.clue);
+                if (img) {
+                    const icon = card.querySelector('.card-icon');
+                    if (icon) {
+                        const imgEl = document.createElement('img');
+                        imgEl.className = 'card-image';
+                        imgEl.src = img;
+                        imgEl.alt = escapeHtml(puzzle.title);
+                        imgEl.onerror = () => { imgEl.style.display = 'none'; };
+                        icon.replaceWith(imgEl);
+                    }
+                    break;
+                }
+            }
+        })();
     });
 }
 
 // ===================== LOAD PUZZLE =====================
 
-function loadPuzzle(category, puzzleIdx) {
+async function loadPuzzle(category, puzzleIdx) {
     const puzzle = gameData.categories[category][puzzleIdx];
+
+    if (!puzzle) {
+        console.error('❌ Puzzle not found for category:', category, 'index:', puzzleIdx);
+        alert('Error: Puzzle not found!');
+        return;
+    }
+
+    console.log('✅ === LOADING PUZZLE ===');
+    console.log('Category:', category);
+    console.log('Puzzle Index:', puzzleIdx);
+    console.log('Puzzle Title:', puzzle.title);
+    console.log('Words count:', puzzle.words.length);
+    console.log('Phrase:', puzzle.phrase);
+    console.log('PhraseMap entries:', puzzle.phraseMap.length);
 
     gameHeaderTitle.textContent = `${category}: ${puzzle.title}`;
 
-    // Build puzzle phrase display
-    buildPuzzlePhrase(puzzle);
+    try {
+        // Build puzzle phrase display
+        console.log('⏳ Building puzzle phrase...');
+        buildPuzzlePhrase(puzzle);
+        console.log('✅ Puzzle phrase built');
 
-    // Build grid
-    buildGrid(puzzle);
+        // Build answers
+        console.log('⏳ Building answers...');
+        buildAnswers(puzzle);
+        console.log('✅ Answers built');
 
-    // Build clues
-    buildClues(puzzle);
+        // Build clues (async for images)
+        console.log('⏳ Building clues...');
+        await buildClues(puzzle);
+        console.log('✅ Clues built');
+        
+        console.log('✅ === PUZZLE LOADED SUCCESSFULLY ===');
+    } catch (error) {
+        console.error('❌ Error in loadPuzzle:', error);
+        alert('Error loading puzzle: ' + error.message);
+    }
 }
 
 function buildPuzzlePhrase(puzzle) {
     puzzlePhraseEl.innerHTML = '';
 
-    const phrase = puzzle.phrase;
-    let letterIdx = 0; // index into phraseMap
-
-    for (let i = 0; i < phrase.length; i++) {
-        const ch = phrase[i];
-        if (ch === ' ') {
+    // Display shuffled phrase with spaces between words
+    puzzle.phraseMap.forEach((pm) => {
+        if (pm.letter === ' ') {
+            // Space between words
             const spacer = document.createElement('span');
             spacer.className = 'phrase-spacer';
             spacer.style.width = '12px';
@@ -516,7 +957,6 @@ function buildPuzzlePhrase(puzzle) {
             puzzlePhraseEl.appendChild(spacer);
         } else {
             // Letter slot
-            const pm = puzzle.phraseMap[letterIdx];
             const slot = document.createElement('div');
             slot.className = 'phrase-slot';
             slot.dataset.num = pm.num;
@@ -526,103 +966,199 @@ function buildPuzzlePhrase(puzzle) {
                 <span class="phrase-slot-letter"></span>
             `;
             puzzlePhraseEl.appendChild(slot);
-            letterIdx++;
         }
+    });
+}
+
+function buildAnswers(puzzle) {
+    console.log('Building answers for puzzle:', puzzle.title);
+    console.log('Puzzle object keys:', Object.keys(puzzle));
+    console.log('puzzle.words exists:', 'words' in puzzle);
+    console.log('puzzle.words:', puzzle.words);
+    console.log('puzzle.phraseMap length:', puzzle.phraseMap.length);
+    
+    // Collect all unique numbers from the phrase map
+    const phraseNums = new Set(puzzle.phraseMap.map(pm => pm.num));
+    console.log('Phrase box numbers:', Array.from(phraseNums).sort((a,b) => a-b));
+    
+    try {
+        if (!answersList) {
+            throw new Error('answersList DOM element not found');
+        }
+        
+        answersList.innerHTML = '';
+
+        if (!puzzle.words || !Array.isArray(puzzle.words)) {
+            throw new Error('puzzle.words is not an array: ' + typeof puzzle.words);
+        }
+
+        console.log('Words count:', puzzle.words.length);
+
+        puzzle.words.forEach((word, wordIdx) => {
+            console.log(`Creating answer row ${wordIdx + 1} for word:`, word.answer);
+            console.log('Word object:', word);
+
+            const answerRow = document.createElement('div');
+            answerRow.className = 'answer-row';
+            answerRow.dataset.clueNum = word.clueNum;
+
+            // Create letter inputs for this word
+            const inputsContainer = document.createElement('div');
+            inputsContainer.className = 'answer-inputs';
+
+            if (!word.answer) {
+                throw new Error(`Word at index ${wordIdx} has no answer`);
+            }
+
+            for (let i = 0; i < word.answer.length; i++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'answer-cell-wrapper';
+
+                // Cell number badge
+                const cellNum = word.cellNums ? word.cellNums[i] : 'N/A';
+                
+                // Verify this number exists in the phrase
+                if (!phraseNums.has(cellNum)) {
+                    console.warn(`⚠️ Answer box #${cellNum} NOT in puzzle phrase!`);
+                }
+                
+                console.log(`  Letter ${i}: cellNum=${cellNum}, answer=${word.answer[i]}, inPhrase=${phraseNums.has(cellNum)}`);
+                
+                const numBadge = document.createElement('div');
+                numBadge.className = 'cell-num-badge';
+                numBadge.textContent = cellNum;
+                wrapper.appendChild(numBadge);
+
+                // Input
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'answer-cell';
+                input.dataset.wordIdx = wordIdx;
+                input.dataset.letterIdx = i;
+                input.dataset.answer = word.answer[i];
+                input.dataset.num = cellNum;
+                input.dataset.clueNum = word.clueNum;
+                input.maxLength = 1;
+                input.autocapitalize = 'characters';
+                input.autocomplete = 'off';
+                input.inputMode = 'text';
+
+                input.addEventListener('input', handleAnswerInput);
+                input.addEventListener('keydown', handleAnswerKeydown);
+                input.addEventListener('focus', handleAnswerFocus);
+
+                wrapper.appendChild(input);
+                inputsContainer.appendChild(wrapper);
+            }
+
+            // Add clue number label to the row
+            const clueLabel = document.createElement('div');
+            clueLabel.className = 'answer-row-label';
+            clueLabel.innerHTML = `<span class="answer-row-clue-num">${word.clueNum}.</span> <span class="answer-row-clue-text">${escapeHtml(word.clue)}</span>`;
+            
+            // Fix: append in correct order instead of using insertBefore
+            answerRow.appendChild(clueLabel);
+            answerRow.appendChild(inputsContainer);
+            answersList.appendChild(answerRow);
+        });
+
+        console.log('✅ Answers built successfully. Total rows:', puzzle.words.length);
+    } catch (error) {
+        console.error('❌ Error building answers:', error);
+        console.error('Error stack:', error.stack);
+        answersList.innerHTML = '<div class="clues-loading" style="color: #F44336;">Error building answers: ' + error.message + '</div>';
     }
 }
 
-function buildGrid(puzzle) {
-    crosswordGrid.innerHTML = '';
-    gridContainerEl.style.display = 'block';
+async function buildClues(puzzle) {
+    cluesList.innerHTML = '<div class="clues-loading">Loading images...</div>';
 
-    const maxCol = Math.max(...puzzle.grid.map(c => c.col)) + 1;
-    crosswordGrid.style.gridTemplateColumns = `repeat(${maxCol}, 42px)`;
-
-    puzzle.grid.forEach((cell) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'grid-cell-wrapper';
-
-        // Cell number badge
-        const numBadge = document.createElement('div');
-        numBadge.className = 'cell-num-badge';
-        numBadge.textContent = cell.num;
-        wrapper.appendChild(numBadge);
-
-        // Input
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.className = 'grid-cell active';
-        input.dataset.row = cell.row;
-        input.dataset.col = cell.col;
-        input.dataset.answer = cell.letter;
-        input.dataset.num = cell.num;
-        input.maxLength = 1;
-        input.autocapitalize = 'characters';
-        input.autocomplete = 'off';
-        input.inputMode = 'text';
-
-        input.addEventListener('input', handleCellInput);
-        input.addEventListener('keydown', handleCellKeydown);
-        input.addEventListener('focus', handleCellFocus);
-        input.addEventListener('touchstart', handleCellTouch, { passive: true });
-
-        wrapper.appendChild(input);
-        crosswordGrid.appendChild(wrapper);
-    });
-}
-
-function buildClues(puzzle) {
-    cluesList.innerHTML = '';
-
-    puzzle.words.forEach((word, i) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span class="clue-number">${word.clueNum}.</span>
-            <span class="clue-text">${escapeHtml(word.clue)}</span>
-            <span class="clue-len">(${word.answer.length})</span>
-        `;
-        li.addEventListener('click', () => {
-            SoundManager.play('click');
-            highlightWord(word.clueNum);
+    try {
+        // Fetch images for all words in parallel
+        const imagePromises = puzzle.words.map(async (word) => {
+            try {
+                return await getWordImage(word.answer, word.clue);
+            } catch (error) {
+                console.log('Failed to load image for:', word.answer);
+                return null;
+            }
         });
-        cluesList.appendChild(li);
-    });
+
+        const images = await Promise.all(imagePromises);
+
+        cluesList.innerHTML = '';
+
+        puzzle.words.forEach((word, i) => {
+            const li = document.createElement('li');
+            const imgUrl = images[i];
+            const imageSection = imgUrl ? `<img class="clue-image" src="${imgUrl}" alt="${escapeHtml(word.answer)}" onerror="this.style.display='none'">` : '';
+
+            li.innerHTML = `
+                ${imageSection}
+                <span class="clue-number">${word.clueNum}.</span>
+                <span class="clue-text">${escapeHtml(word.clue)}</span>
+                <span class="clue-len">(${word.answer.length})</span>
+            `;
+            li.addEventListener('click', () => {
+                SoundManager.play('click');
+                highlightWord(word.clueNum);
+            });
+            cluesList.appendChild(li);
+        });
+    } catch (error) {
+        console.error('Error building clues:', error);
+        // Show clues without images if something fails
+        cluesList.innerHTML = '';
+        puzzle.words.forEach((word) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span class="clue-number">${word.clueNum}.</span>
+                <span class="clue-text">${escapeHtml(word.clue)}</span>
+                <span class="clue-len">(${word.answer.length})</span>
+            `;
+            li.addEventListener('click', () => {
+                SoundManager.play('click');
+                highlightWord(word.clueNum);
+            });
+            cluesList.appendChild(li);
+        });
+    }
 }
 
 function highlightWord(clueNum) {
-    // Highlight the first cell of the word
-    const input = crosswordGrid.querySelector(`input[data-num="${clueNum}"]`);
+    // Highlight the first cell of the word in answers
+    const input = answersList.querySelector(`input[data-clue-num="${clueNum}"][data-letter-idx="0"]`);
     if (input) {
         input.focus();
         input.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 }
 
-// ===================== CELL HANDLERS =====================
+// ===================== ANSWER HANDLERS =====================
 
-function handleCellInput(e) {
+function handleAnswerInput(e) {
     const cell = e.target;
     cell.value = cell.value.toUpperCase().replace(/[^A-Z]/g, '');
 
     if (cell.value.length === 1) {
         // Play click sound
         SoundManager.play('click');
-        
+
         // Check if correct and update puzzle phrase
         checkAndUpdatePhrase(cell);
 
-        // Move to next cell
-        const nextWrapper = cell.closest('.grid-cell-wrapper')?.nextElementSibling;
-        if (nextWrapper) {
-            const nextCell = nextWrapper.querySelector('input');
-            if (nextCell) nextCell.focus();
-        }
+        // Move to next cell in same word
+        const wordIdx = cell.dataset.wordIdx;
+        const letterIdx = parseInt(cell.dataset.letterIdx);
+        const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
+        if (nextCell) nextCell.focus();
     }
 }
 
-function handleCellKeydown(e) {
+function handleAnswerKeydown(e) {
     const cell = e.target;
-    const wrapper = cell.closest('.grid-cell-wrapper');
+    const wordIdx = cell.dataset.wordIdx;
+    const letterIdx = parseInt(cell.dataset.letterIdx);
 
     if (e.key === 'Backspace') {
         e.preventDefault();
@@ -630,9 +1166,9 @@ function handleCellKeydown(e) {
             cell.value = '';
             checkAndUpdatePhrase(cell); // clear phrase letter if was correct
         } else {
-            const prevWrapper = wrapper?.previousElementSibling;
-            if (prevWrapper) {
-                const prevCell = prevWrapper.querySelector('input');
+            // Go to previous cell in same word
+            if (letterIdx > 0) {
+                const prevCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx - 1}"]`);
                 if (prevCell) {
                     prevCell.value = '';
                     checkAndUpdatePhrase(prevCell);
@@ -656,57 +1192,60 @@ function handleCellKeydown(e) {
         SoundManager.play('click');
         checkAndUpdatePhrase(cell);
 
-        const nextWrapper = wrapper?.nextElementSibling;
-        if (nextWrapper) {
-            const nextCell = nextWrapper.querySelector('input');
-            if (nextCell) nextCell.focus();
-        }
+        const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
+        if (nextCell) nextCell.focus();
         return;
     }
 
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    if (e.key === 'ArrowRight') {
         e.preventDefault();
-        const nextWrapper = wrapper?.nextElementSibling;
-        if (nextWrapper) {
-            const nextCell = nextWrapper.querySelector('input');
+        if (letterIdx < 20) { // max reasonable length
+            const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
             if (nextCell) nextCell.focus();
         }
     }
 
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    if (e.key === 'ArrowLeft') {
         e.preventDefault();
-        const prevWrapper = wrapper?.previousElementSibling;
-        if (prevWrapper) {
-            const prevCell = prevWrapper.querySelector('input');
+        if (letterIdx > 0) {
+            const prevCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx - 1}"]`);
             if (prevCell) prevCell.focus();
         }
+    }
+
+    if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const clueNum = parseInt(cell.dataset.clueNum);
+        if (clueNum > 1) {
+            const prevWordCell = answersList.querySelector(`input[data-clue-num="${clueNum - 1}"][data-letter-idx="${letterIdx}"]`);
+            if (prevWordCell) prevWordCell.focus();
+        }
+    }
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        const clueNum = parseInt(cell.dataset.clueNum);
+        const nextWordCell = answersList.querySelector(`input[data-clue-num="${clueNum + 1}"][data-letter-idx="${letterIdx}"]`);
+        if (nextWordCell) nextWordCell.focus();
     }
 
     if (e.key === 'Enter') {
         e.preventDefault();
-        const nextWrapper = wrapper?.nextElementSibling;
-        if (nextWrapper) {
-            const nextCell = nextWrapper.querySelector('input');
-            if (nextCell) nextCell.focus();
-        }
+        const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
+        if (nextCell) nextCell.focus();
     }
 
     if (e.key === 'Escape') {
         e.preventDefault();
-        const prevWrapper = wrapper?.previousElementSibling;
-        if (prevWrapper) {
-            const prevCell = prevWrapper.querySelector('input');
+        if (letterIdx > 0) {
+            const prevCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx - 1}"]`);
             if (prevCell) prevCell.focus();
         }
     }
 }
 
-function handleCellFocus(e) {
+function handleAnswerFocus(e) {
     e.target.select();
-}
-
-function handleCellTouch(e) {
-    setTimeout(() => e.target.focus(), 10);
 }
 
 // ===================== PUZZLE PHRASE UPDATE =====================
@@ -770,7 +1309,7 @@ function checkPhraseComplete() {
 // ===================== GAME CONTROLS =====================
 
 function checkAnswers() {
-    const inputs = crosswordGrid.querySelectorAll('input.grid-cell');
+    const inputs = answersList.querySelectorAll('input.answer-cell');
     let allCorrect = true;
     let hasAnyInput = false;
 
@@ -803,8 +1342,8 @@ function checkAnswers() {
 
 function resetPuzzle() {
     SoundManager.play('click');
-    
-    const inputs = crosswordGrid.querySelectorAll('input.grid-cell');
+
+    const inputs = answersList.querySelectorAll('input.answer-cell');
     inputs.forEach(cell => {
         cell.value = '';
         cell.classList.remove('correct', 'incorrect');
@@ -819,13 +1358,13 @@ function resetPuzzle() {
     });
 }
 
-function nextPuzzle() {
+async function nextPuzzle() {
     SoundManager.play('click');
     
     if (!currentCategory) return;
     const puzzles = gameData.categories[currentCategory];
     currentPuzzleIdx = (currentPuzzleIdx + 1) % puzzles.length;
-    loadPuzzle(currentCategory, currentPuzzleIdx);
+    await loadPuzzle(currentCategory, currentPuzzleIdx);
 }
 
 // ===================== UTILITY =====================
