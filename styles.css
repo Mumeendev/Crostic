@@ -548,6 +548,13 @@ body {
     transform: scale(1.05);
 }
 
+/* Question mark placeholder styling */
+.answer-cell.question-mark {
+    color: rgba(45, 27, 105, 0.25);
+    font-style: italic;
+    font-weight: 400;
+}
+
 .answer-cell.correct {
     background: #4CAF50;
     color: #FFFFFF;

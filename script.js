@@ -288,6 +288,293 @@ async function getWordImage(word, clue) {
     return null;
 }
 
+// ===================== PHRASE VARIATIONS =====================
+// Pre-defined meaningful sentence variations for each puzzle phrase
+const PHRASE_VARIATIONS = {
+    'AFRICA IS RICH IN CULTURE': [
+        'CULTURE IN AFRICA IS RICH',
+        'AFRICA IS RICH IN CULTURE',
+        'RICH CULTURE IS IN AFRICA',
+        'IN AFRICA CULTURE IS RICH'
+    ],
+    'PEACE FREEDOM JUSTICE NOW': [
+        'FREEDOM JUSTICE PEACE NOW',
+        'NOW PEACE FREEDOM JUSTICE',
+        'JUSTICE NOW PEACE FREEDOM',
+        'PEACE FREEDOM JUSTICE NOW'
+    ],
+    'NILE RIVER FLOWS NORTH': [
+        'RIVER NILE FLOWS NORTH',
+        'FLOWS NORTH NILE RIVER',
+        'NORTH FLOWS NILE RIVER',
+        'NILE RIVER FLOWS NORTH'
+    ],
+    'GRIOT TELLS ANCIENT STORIES': [
+        'ANCIENT STORIES GRIOT TELLS',
+        'STORIES GRIOT TELLS ANCIENT',
+        'TELLS ANCIENT STORIES GRIOT',
+        'GRIOT TELLS ANCIENT STORIES'
+    ],
+    'JOLLOF RICE TASTES GREAT': [
+        'RICE JOLLOF TASTES GREAT',
+        'GREAT TASTES JOLLOF RICE',
+        'TASTES GREAT JOLLOF RICE',
+        'JOLLOF RICE TASTES GREAT'
+    ],
+    'BRONZE MASKS ARE BEAUTIFUL': [
+        'MASKS BRONZE ARE BEAUTIFUL',
+        'BEAUTIFUL ARE BRONZE MASKS',
+        'ARE BEAUTIFUL BRONZE MASKS',
+        'BRONZE MASKS ARE BEAUTIFUL'
+    ],
+    'PHARAOHS RULED ANCIENT EGYPT': [
+        'ANCIENT EGYPT PHARAOHS RULED',
+        'RULED ANCIENT EGYPT PHARAOHS',
+        'EGYPT PHARAOHS RULED ANCIENT',
+        'PHARAOHS RULED ANCIENT EGYPT'
+    ],
+    'GREAT EMPIRES OF AFRICA': [
+        'EMPIRES OF GREAT AFRICA',
+        'AFRICA OF GREAT EMPIRES',
+        'OF AFRICA GREAT EMPIRES',
+        'GREAT EMPIRES OF AFRICA'
+    ],
+    'FREEDOM COMES AFTER STRUGGLE': [
+        'AFTER STRUGGLE FREEDOM COMES',
+        'STRUGGLE FREEDOM COMES AFTER',
+        'COMES AFTER STRUGGLE FREEDOM',
+        'FREEDOM COMES AFTER STRUGGLE'
+    ],
+    'MARCH FOR EQUAL RIGHTS': [
+        'EQUAL RIGHTS FOR MARCH',
+        'FOR MARCH EQUAL RIGHTS',
+        'RIGHTS EQUAL MARCH FOR',
+        'MARCH FOR EQUAL RIGHTS'
+    ],
+    'STARS SHINE BRIGHT AT NIGHT': [
+        'BRIGHT STARS SHINE AT NIGHT',
+        'AT NIGHT STARS SHINE BRIGHT',
+        'SHINE BRIGHT STARS AT NIGHT',
+        'STARS SHINE BRIGHT AT NIGHT'
+    ],
+    'HEART PUMPS BLOOD FAST': [
+        'BLOOD HEART PUMPS FAST',
+        'FAST BLOOD HEART PUMPS',
+        'PUMPS FAST HEART BLOOD',
+        'HEART PUMPS BLOOD FAST'
+    ],
+    'GREEN TREES GROW TALL': [
+        'TREES GREEN GROW TALL',
+        'TALL GREEN TREES GROW',
+        'GROW TALL GREEN TREES',
+        'GREEN TREES GROW TALL'
+    ],
+    'ATOMS FORM NEW BONDS': [
+        'NEW ATOMS FORM BONDS',
+        'BONDS FORM NEW ATOMS',
+        'FORM BONDS ATOMS NEW',
+        'ATOMS FORM NEW BONDS'
+    ],
+    'WANGARI PLANTED MANY TREES': [
+        'MANY TREES WANGARI PLANTED',
+        'PLANTED MANY TREES WANGARI',
+        'TREES WANGARI PLANTED MANY',
+        'WANGARI PLANTED MANY TREES'
+    ],
+    'JAZZ BLUES SOUL AND FUNK': [
+        'BLUES JAZZ SOUL AND FUNK',
+        'SOUL AND JAZZ BLUES FUNK',
+        'FUNK SOUL JAZZ AND BLUES',
+        'JAZZ BLUES SOUL AND FUNK'
+    ],
+    'DRUMS AND GUITAR PLAY': [
+        'GUITAR AND DRUMS PLAY',
+        'PLAY DRUMS AND GUITAR',
+        'AND GUITAR PLAY DRUMS',
+        'DRUMS AND GUITAR PLAY'
+    ],
+    'KORA SOUNDS LIKE WATER': [
+        'WATER KORA SOUNDS LIKE',
+        'LIKE WATER KORA SOUNDS',
+        'SOUNDS LIKE WATER KORA',
+        'KORA SOUNDS LIKE WATER'
+    ],
+    'BOB MARLEY IS A LEGEND': [
+        'A LEGEND BOB MARLEY IS',
+        'IS A LEGEND BOB MARLEY',
+        'LEGEND BOB MARLEY IS A',
+        'BOB MARLEY IS A LEGEND'
+    ],
+    'FILM MAKING IS AN ART': [
+        'MAKING FILM IS AN ART',
+        'AN ART FILM MAKING IS',
+        'IS AN ART FILM MAKING',
+        'FILM MAKING IS AN ART'
+    ],
+    'SOCCER IS THE BEST': [
+        'THE BEST SOCCER IS',
+        'BEST IS THE SOCCER',
+        'IS SOCCER THE BEST',
+        'SOCCER IS THE BEST'
+    ],
+    'POETRY TELLS OUR STORY': [
+        'OUR STORY POETRY TELLS',
+        'TELLS OUR STORY POETRY',
+        'STORY POETRY TELLS OUR',
+        'POETRY TELLS OUR STORY'
+    ],
+    'DANCE SING AND CELEBRATE': [
+        'SING DANCE AND CELEBRATE',
+        'AND CELEBRATE DANCE SING',
+        'CELEBRATE AND SING DANCE',
+        'DANCE SING AND CELEBRATE'
+    ],
+    'LITERATURE ARTS POETRY TELLS STORY': [
+        'POETRY TELLS STORY LITERATURE ARTS',
+        'STORY POETRY TELLS LITERATURE ARTS',
+        'TELLS STORY LITERATURE ARTS POETRY',
+        'LITERATURE ARTS POETRY TELLS STORY'
+    ],
+    'SPORTS GAMES SOCCER IS BEST': [
+        'SOCCER IS BEST SPORTS GAMES',
+        'BEST SOCCER IS SPORTS GAMES',
+        'IS BEST SOCCER SPORTS GAMES',
+        'SPORTS GAMES SOCCER IS BEST'
+    ],
+    'AFRICAN CINEMA FILM MAKING ART': [
+        'FILM MAKING ART AFRICAN CINEMA',
+        'MAKING ART AFRICAN CINEMA FILM',
+        'ART AFRICAN CINEMA FILM MAKING',
+        'AFRICAN CINEMA FILM MAKING ART'
+    ],
+    'MUSICAL INSTRUMENTS DRUMS GUITAR PLAY': [
+        'DRUMS GUITAR PLAY MUSICAL INSTRUMENTS',
+        'GUITAR PLAY MUSICAL INSTRUMENTS DRUMS',
+        'PLAY MUSICAL INSTRUMENTS DRUMS GUITAR',
+        'MUSICAL INSTRUMENTS DRUMS GUITAR PLAY'
+    ],
+    'FAMOUS MUSICIANS BOB MARLEY LEGEND': [
+        'BOB MARLEY LEGEND FAMOUS MUSICIANS',
+        'MARLEY LEGEND FAMOUS MUSICIANS BOB',
+        'LEGEND FAMOUS MUSICIANS BOB MARLEY',
+        'FAMOUS MUSICIANS BOB MARLEY LEGEND'
+    ],
+    'AFRICAN MUSIC KORA SOUNDS WATER': [
+        'KORA SOUNDS WATER AFRICAN MUSIC',
+        'SOUNDS WATER AFRICAN MUSIC KORA',
+        'WATER AFRICAN MUSIC KORA SOUNDS',
+        'AFRICAN MUSIC KORA SOUNDS WATER'
+    ],
+    'MUSIC GENRES JAZZ BLUES SOUL FUNK': [
+        'JAZZ BLUES SOUL FUNK MUSIC GENRES',
+        'BLUES SOUL FUNK MUSIC GENRES JAZZ',
+        'SOUL FUNK MUSIC GENRES JAZZ BLUES',
+        'MUSIC GENRES JAZZ BLUES SOUL FUNK'
+    ],
+    'HUMAN BODY HEART PUMPS BLOOD': [
+        'HEART PUMPS BLOOD HUMAN BODY',
+        'PUMPS BLOOD HUMAN BODY HEART',
+        'BLOOD HUMAN BODY HEART PUMPS',
+        'HUMAN BODY HEART PUMPS BLOOD'
+    ],
+    'SPACE SCIENCE STARS SHINE BRIGHT': [
+        'STARS SHINE BRIGHT SPACE SCIENCE',
+        'SHINE BRIGHT SPACE SCIENCE STARS',
+        'BRIGHT SPACE SCIENCE STARS SHINE',
+        'SPACE SCIENCE STARS SHINE BRIGHT'
+    ],
+    'NATURE GREEN TREES GROW': [
+        'GREEN TREES GROW NATURE',
+        'TREES GROW NATURE GREEN',
+        'GROW NATURE GREEN TREES',
+        'NATURE GREEN TREES GROW'
+    ],
+    'CHEMISTRY ATOMS FORM BONDS': [
+        'ATOMS FORM BONDS CHEMISTRY',
+        'FORM BONDS CHEMISTRY ATOMS',
+        'BONDS CHEMISTRY ATOMS FORM',
+        'CHEMISTRY ATOMS FORM BONDS'
+    ],
+    'CIVIL RIGHTS MARCH EQUAL RIGHTS': [
+        'MARCH EQUAL RIGHTS CIVIL RIGHTS',
+        'EQUAL RIGHTS CIVIL RIGHTS MARCH',
+        'RIGHTS CIVIL RIGHTS MARCH EQUAL',
+        'CIVIL RIGHTS MARCH EQUAL RIGHTS'
+    ],
+    'COLONIAL ERA FREEDOM AFTER STRUGGLE': [
+        'FREEDOM AFTER STRUGGLE COLONIAL ERA',
+        'AFTER STRUGGLE COLONIAL ERA FREEDOM',
+        'STRUGGLE COLONIAL ERA FREEDOM AFTER',
+        'COLONIAL ERA FREEDOM AFTER STRUGGLE'
+    ],
+    'AFRICAN EMPIRES GREAT HISTORY': [
+        'GREAT HISTORY AFRICAN EMPIRES',
+        'HISTORY AFRICAN EMPIRES GREAT',
+        'AFRICAN EMPIRES GREAT HISTORY',
+        'GREAT AFRICAN EMPIRES HISTORY'
+    ],
+    'ANCIENT EGYPT PHARAOHS RULED': [
+        'PHARAOHS RULED ANCIENT EGYPT',
+        'RULED ANCIENT EGYPT PHARAOHS',
+        'ANCIENT EGYPT RULED PHARAOHS',
+        'EGYPT PHARAOHS RULED ANCIENT'
+    ],
+    'AFRICAN ART BRONZE MASKS': [
+        'BRONZE MASKS AFRICAN ART',
+        'MASKS AFRICAN ART BRONZE',
+        'AFRICAN ART BRONZE MASKS',
+        'BRONZE AFRICAN ART MASKS'
+    ],
+    'AFRICAN FOOD JOLLOF RICE': [
+        'JOLLOF RICE AFRICAN FOOD',
+        'RICE AFRICAN FOOD JOLLOF',
+        'AFRICAN FOOD JOLLOF RICE',
+        'JOLLOF AFRICAN FOOD RICE'
+    ],
+    'AFRICAN TRADITIONS GRIOT TELLS': [
+        'GRIOT TELLS AFRICAN TRADITIONS',
+        'TELLS AFRICAN TRADITIONS GRIOT',
+        'AFRICAN TRADITIONS GRIOT TELLS',
+        'GRIOT AFRICAN TRADITIONS TELLS'
+    ],
+    'AFRICAN GEOGRAPHY NILE RIVER': [
+        'NILE RIVER AFRICAN GEOGRAPHY',
+        'RIVER AFRICAN GEOGRAPHY NILE',
+        'AFRICAN GEOGRAPHY NILE RIVER',
+        'NILE AFRICAN GEOGRAPHY RIVER'
+    ],
+    'AFRICAN LEADERS PEACE FREEDOM': [
+        'PEACE FREEDOM AFRICAN LEADERS',
+        'FREEDOM AFRICAN LEADERS PEACE',
+        'AFRICAN LEADERS PEACE FREEDOM',
+        'PEACE AFRICAN LEADERS FREEDOM'
+    ]
+};
+
+// Automatically generate variations for phrases not in the database
+function generatePhraseVariations(phrase) {
+    if (PHRASE_VARIATIONS[phrase]) {
+        return PHRASE_VARIATIONS[phrase];
+    }
+    
+    const words = phrase.split(' ');
+    const variations = [phrase]; // Start with original
+    
+    // Generate some basic variations
+    if (words.length >= 3) {
+        // Rotate words
+        for (let i = 1; i < words.length; i++) {
+            const rotated = [...words.slice(i), ...words.slice(0, i)];
+            variations.push(rotated.join(' '));
+        }
+        
+        // Reverse word order
+        variations.push([...words].reverse().join(' '));
+    }
+    
+    return variations;
+}
+
 // ===================== SOUND MANAGER =====================
 
 const SoundManager = {
@@ -593,50 +880,65 @@ function buildCrosticPuzzle(phrase, words) {
         });
     });
 
-    // Map phrase letters to grid cells sequentially
-    // Each letter in the phrase (ignoring spaces) gets assigned the next available cell number
-    const phraseWords = phrase.split(' ');
-    const phraseLetters = phrase.replace(/[^A-Z]/g, '').split('');
+    // Select a meaningful phrase variation
+    let selectedPhrase = phrase;
+    const variations = generatePhraseVariations(phrase);
+    
+    if (variations.length > 1) {
+        // Pick a random variation (try to avoid the original)
+        let randomIdx = Math.floor(Math.random() * variations.length);
+        // If there are multiple variations, pick one different from original
+        if (variations.length > 1 && variations[randomIdx] === phrase) {
+            randomIdx = (randomIdx + 1) % variations.length;
+        }
+        selectedPhrase = variations[randomIdx];
+        console.log(`📝 Using phrase variation: "${selectedPhrase}"`);
+    }
 
-    // We assign phrase positions by taking cells in order (row by row, col by col)
-    let cellIdx = 0;
+    // Create phrase display structure
+    const phraseWords = selectedPhrase.split(' ');
+    const phraseLetters = selectedPhrase.replace(/[^A-Z]/g, '').split('');
     const totalGridCells = grid.length;
 
-    // Build phrase mapping: each phrase letter maps to a grid cell number
-    const phraseMap = []; // { phrasePos, num, letter }
-    for (let i = 0; i < phraseLetters.length; i++) {
-        const cell = grid[i % totalGridCells];
-        phraseMap.push({ phrasePos: i, num: cell.num, letter: cell.letter });
-    }
+    console.log(`📊 Grid cells: ${totalGridCells}, Phrase letters: ${phraseLetters.length}`);
 
-    // Shuffle WORDS in the phrase (not individual letters)
-    // This keeps words readable but rearranges them into a different order
-    const shuffledWords = [...phraseWords];
-    for (let i = shuffledWords.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
-    }
-
-    // Build shuffled phrase map that preserves word boundaries
-    const shuffledPhraseMap = [];
-    let phraseMapIdx = 0;
+    // Build phrase map: each position in the displayed phrase maps to a grid cell
+    const phraseMap = [];
+    let gridIdx = 0;
     
-    for (let w = 0; w < shuffledWords.length; w++) {
-        const word = shuffledWords[w];
+    for (let w = 0; w < phraseWords.length; w++) {
+        const word = phraseWords[w];
         for (let i = 0; i < word.length; i++) {
-            if (phraseMapIdx < phraseMap.length) {
-                shuffledPhraseMap.push({
-                    ...phraseMap[phraseMapIdx],
-                    phrasePos: phraseMapIdx
+            if (gridIdx < totalGridCells) {
+                phraseMap.push({
+                    phrasePos: phraseMap.length,
+                    num: grid[gridIdx].num,
+                    letter: grid[gridIdx].letter
                 });
-                phraseMapIdx++;
+                gridIdx++;
             }
         }
-        // Add space marker between words (except after last word)
-        if (w < shuffledWords.length - 1) {
-            shuffledPhraseMap.push({ phrasePos: 'space', num: null, letter: ' ' });
+        // Add space between words (except after last word)
+        if (w < phraseWords.length - 1) {
+            phraseMap.push({ phrasePos: 'space', num: null, letter: ' ' });
         }
     }
+
+    // If there are remaining grid cells, add them as extra positions
+    while (gridIdx < totalGridCells) {
+        phraseMap.push({
+            phrasePos: phraseMap.length,
+            num: grid[gridIdx].num,
+            letter: grid[gridIdx].letter
+        });
+        gridIdx++;
+    }
+
+    console.log(`✅ Created phraseMap with ${phraseMap.length} entries`);
+    console.log(`✅ All grid cells mapped: ${phraseMap.filter(p => p.num !== null).length}`);
+
+    // Store the selected phrase words
+    const shuffledWords = phraseWords;
 
     // Build words with their clue numbers and cell numbers
     const wordsWithNums = words.map((w, i) => ({
@@ -645,7 +947,15 @@ function buildCrosticPuzzle(phrase, words) {
         cellNums: grid.filter(c => c.row === i).map(c => c.num)
     }));
 
-    return { grid, words: wordsWithNums, phrase, phraseMap: shuffledPhraseMap, shuffledWords };
+    return { 
+        grid, 
+        words: wordsWithNums, 
+        phrase, 
+        selectedPhrase,
+        phraseMap, 
+        shuffledWords,
+        allCellNums: grid.map(c => c.num)
+    };
 }
 
 // ===================== GAME STATE =====================
@@ -946,9 +1256,12 @@ async function loadPuzzle(category, puzzleIdx) {
 function buildPuzzlePhrase(puzzle) {
     puzzlePhraseEl.innerHTML = '';
 
-    // Display shuffled phrase with spaces between words
-    puzzle.phraseMap.forEach((pm) => {
-        if (pm.letter === ' ') {
+    // Use the phraseMap directly from the puzzle (already has meaningful order)
+    const finalItems = puzzle.phraseMap || [];
+
+    // Render the items
+    finalItems.forEach((item) => {
+        if (item.letter === ' ') {
             // Space between words
             const spacer = document.createElement('span');
             spacer.className = 'phrase-spacer';
@@ -959,15 +1272,17 @@ function buildPuzzlePhrase(puzzle) {
             // Letter slot
             const slot = document.createElement('div');
             slot.className = 'phrase-slot';
-            slot.dataset.num = pm.num;
-            slot.dataset.letter = pm.letter;
+            slot.dataset.num = item.num;
+            slot.dataset.letter = item.letter;
             slot.innerHTML = `
-                <span class="phrase-slot-num">${pm.num}</span>
+                <span class="phrase-slot-num">${item.num}</span>
                 <span class="phrase-slot-letter"></span>
             `;
             puzzlePhraseEl.appendChild(slot);
         }
     });
+    
+    console.log(`📝 Puzzle phrase displayed: "${puzzle.selectedPhrase || puzzle.phrase}"`);
 }
 
 function buildAnswers(puzzle) {
@@ -976,16 +1291,34 @@ function buildAnswers(puzzle) {
     console.log('puzzle.words exists:', 'words' in puzzle);
     console.log('puzzle.words:', puzzle.words);
     console.log('puzzle.phraseMap length:', puzzle.phraseMap.length);
-    
+    console.log('puzzle.allCellNums:', puzzle.allCellNums);
+
     // Collect all unique numbers from the phrase map
-    const phraseNums = new Set(puzzle.phraseMap.map(pm => pm.num));
+    const phraseNums = new Set(puzzle.phraseMap.filter(pm => pm.num !== null).map(pm => pm.num));
     console.log('Phrase box numbers:', Array.from(phraseNums).sort((a,b) => a-b));
     
+    // Collect all answer box numbers
+    const allAnswerNums = [];
+    puzzle.words.forEach(word => {
+        if (word.cellNums) {
+            allAnswerNums.push(...word.cellNums);
+        }
+    });
+    console.log('All answer box numbers:', allAnswerNums.sort((a,b) => a-b));
+    
+    // Check if all answer numbers are in the phrase
+    const missingInPhrase = allAnswerNums.filter(num => !phraseNums.has(num));
+    if (missingInPhrase.length > 0) {
+        console.error('❌ Answer boxes NOT in puzzle phrase:', missingInPhrase);
+    } else {
+        console.log('✅ All answer box numbers are in the puzzle phrase!');
+    }
+
     try {
         if (!answersList) {
             throw new Error('answersList DOM element not found');
         }
-        
+
         answersList.innerHTML = '';
 
         if (!puzzle.words || !Array.isArray(puzzle.words)) {
@@ -1016,14 +1349,9 @@ function buildAnswers(puzzle) {
 
                 // Cell number badge
                 const cellNum = word.cellNums ? word.cellNums[i] : 'N/A';
-                
-                // Verify this number exists in the phrase
-                if (!phraseNums.has(cellNum)) {
-                    console.warn(`⚠️ Answer box #${cellNum} NOT in puzzle phrase!`);
-                }
-                
+
                 console.log(`  Letter ${i}: cellNum=${cellNum}, answer=${word.answer[i]}, inPhrase=${phraseNums.has(cellNum)}`);
-                
+
                 const numBadge = document.createElement('div');
                 numBadge.className = 'cell-num-badge';
                 numBadge.textContent = cellNum;
@@ -1046,10 +1374,21 @@ function buildAnswers(puzzle) {
                 input.addEventListener('input', handleAnswerInput);
                 input.addEventListener('keydown', handleAnswerKeydown);
                 input.addEventListener('focus', handleAnswerFocus);
+                input.addEventListener('blur', handleAnswerBlur);
 
                 wrapper.appendChild(input);
                 inputsContainer.appendChild(wrapper);
             }
+
+            // After building all inputs for this word, add question marks to empty cells
+            setTimeout(() => {
+                const wordInputs = inputsContainer.querySelectorAll('input.answer-cell');
+                wordInputs.forEach(input => {
+                    if (input.value === '') {
+                        showQuestionMark(input);
+                    }
+                });
+            }, 0);
 
             // Add clue number label to the row
             const clueLabel = document.createElement('div');
@@ -1134,10 +1473,32 @@ function highlightWord(clueNum) {
     }
 }
 
+// ===================== QUESTION MARK PLACEHOLDER =====================
+
+function showQuestionMark(cell) {
+    if (cell.value === '') {
+        cell.value = '?';
+        cell.classList.add('question-mark');
+    }
+}
+
+function hideQuestionMark(cell) {
+    if (cell.classList.contains('question-mark')) {
+        cell.value = '';
+        cell.classList.remove('question-mark');
+    }
+}
+
 // ===================== ANSWER HANDLERS =====================
 
 function handleAnswerInput(e) {
     const cell = e.target;
+    
+    // If cell has question mark, clear it first
+    if (cell.classList.contains('question-mark')) {
+        hideQuestionMark(cell);
+    }
+    
     cell.value = cell.value.toUpperCase().replace(/[^A-Z]/g, '');
 
     if (cell.value.length === 1) {
@@ -1151,7 +1512,15 @@ function handleAnswerInput(e) {
         const wordIdx = cell.dataset.wordIdx;
         const letterIdx = parseInt(cell.dataset.letterIdx);
         const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
-        if (nextCell) nextCell.focus();
+        if (nextCell) {
+            if (nextCell.classList.contains('question-mark')) {
+                hideQuestionMark(nextCell);
+            }
+            nextCell.focus();
+        }
+    } else if (cell.value === '') {
+        // If cell is cleared, show question mark again
+        setTimeout(() => showQuestionMark(cell), 10);
     }
 }
 
@@ -1162,38 +1531,54 @@ function handleAnswerKeydown(e) {
 
     if (e.key === 'Backspace') {
         e.preventDefault();
-        if (cell.value !== '') {
-            cell.value = '';
-            checkAndUpdatePhrase(cell); // clear phrase letter if was correct
-        } else {
+        if (cell.classList.contains('question-mark') || cell.value === '') {
             // Go to previous cell in same word
             if (letterIdx > 0) {
                 const prevCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx - 1}"]`);
                 if (prevCell) {
+                    if (prevCell.classList.contains('question-mark')) {
+                        hideQuestionMark(prevCell);
+                    }
                     prevCell.value = '';
                     checkAndUpdatePhrase(prevCell);
                     prevCell.focus();
                 }
             }
+        } else {
+            cell.value = '';
+            checkAndUpdatePhrase(cell); // clear phrase letter if was correct
+            setTimeout(() => showQuestionMark(cell), 10);
         }
         return;
     }
 
     if (e.key === 'Delete') {
         e.preventDefault();
-        cell.value = '';
-        checkAndUpdatePhrase(cell);
+        if (!cell.classList.contains('question-mark')) {
+            cell.value = '';
+            checkAndUpdatePhrase(cell);
+            setTimeout(() => showQuestionMark(cell), 10);
+        }
         return;
     }
 
     if (e.key.length === 1 && e.key.match(/[a-zA-Z]/)) {
         e.preventDefault();
+        // Hide question mark if present
+        if (cell.classList.contains('question-mark')) {
+            hideQuestionMark(cell);
+        }
         cell.value = e.key.toUpperCase();
         SoundManager.play('click');
         checkAndUpdatePhrase(cell);
 
         const nextCell = answersList.querySelector(`input[data-word-idx="${wordIdx}"][data-letter-idx="${letterIdx + 1}"]`);
-        if (nextCell) nextCell.focus();
+        if (nextCell) {
+            if (nextCell.classList.contains('question-mark')) {
+                hideQuestionMark(nextCell);
+            }
+            nextCell.focus();
+        }
         return;
     }
 
@@ -1245,7 +1630,20 @@ function handleAnswerKeydown(e) {
 }
 
 function handleAnswerFocus(e) {
+    const cell = e.target;
+    // Clear question mark when cell is focused
+    if (cell.classList.contains('question-mark')) {
+        hideQuestionMark(cell);
+    }
     e.target.select();
+}
+
+function handleAnswerBlur(e) {
+    const cell = e.target;
+    // Show question mark if cell is empty when blurred
+    if (cell.value === '') {
+        showQuestionMark(cell);
+    }
 }
 
 // ===================== PUZZLE PHRASE UPDATE =====================
@@ -1254,6 +1652,9 @@ function checkAndUpdatePhrase(cell) {
     const cellNum = parseInt(cell.dataset.num);
     const userAnswer = cell.value.toUpperCase();
     const correctAnswer = cell.dataset.answer;
+
+    // Don't process question marks as valid answers
+    if (userAnswer === '?') return;
 
     // Find matching phrase slots
     const slots = puzzlePhraseEl.querySelectorAll('.phrase-slot');
@@ -1319,12 +1720,13 @@ function checkAnswers() {
 
         cell.classList.remove('correct', 'incorrect');
 
-        if (userAnswer !== '') hasAnyInput = true;
+        // Check if user has entered anything (not just question mark placeholder)
+        if (userAnswer !== '' && userAnswer !== '?') hasAnyInput = true;
 
         if (userAnswer === answer) {
             cell.classList.add('correct');
             checkAndUpdatePhrase(cell);
-        } else if (userAnswer !== '') {
+        } else if (userAnswer !== '' && userAnswer !== '?') {
             cell.classList.add('incorrect');
             allCorrect = false;
         } else {
@@ -1346,7 +1748,9 @@ function resetPuzzle() {
     const inputs = answersList.querySelectorAll('input.answer-cell');
     inputs.forEach(cell => {
         cell.value = '';
-        cell.classList.remove('correct', 'incorrect');
+        cell.classList.remove('correct', 'incorrect', 'question-mark');
+        // Add question mark back to empty cells
+        showQuestionMark(cell);
     });
 
     // Clear all phrase slots
